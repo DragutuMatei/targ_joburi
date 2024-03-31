@@ -469,7 +469,10 @@ function Profile() {
                     </>
                   ) : (
                     <>
-                      <div id="reader"></div>
+                      <div
+                        id="reader"
+                        style={{ width: "80%", margin: "0 auto" }}
+                      ></div>
                       {suuc && <h3>{suuc}</h3>}
                     </>
                   )}
