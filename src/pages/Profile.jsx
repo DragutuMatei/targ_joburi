@@ -246,7 +246,7 @@ function Profile() {
     }
     // console.log("my:", myStand);
     if (
-      confirm(
+      window.confirm(
         "Acesta va ramane standul dvs.! Nu il veti mai putea schimba! Doriti sa continuati?"
       )
     ) {
