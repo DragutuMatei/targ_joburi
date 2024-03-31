@@ -25,7 +25,7 @@ function Login() {
         await fire.getUserByEmail("/targ_users", user.email).then((res) => {
           console.log(res);
           setUser(res);
-          navigate(`/targ/profile/${res.email}`);
+          navigate(`/profile/${res.email}`);
         });
       }
     };
@@ -36,6 +36,7 @@ function Login() {
       <div className="login">
         <h1>OSFIIR</h1>
         <img src={require("../assets/img/logo.png")} alt="" />
+        <div className="cerc"></div>
         <div className="form">
           <div className="input_field">
             <h3>Email</h3>
@@ -46,10 +47,10 @@ function Login() {
             />
           </div>
           <div className="input_field">
-            <h4>Parola</h4>
+            <h3>Parola</h3>
             <input
               type="password"
-              placeholder="Parola"
+              placeholder="******"
               onChange={(e) => setLogPass(e.target.value)}
             />
           </div>

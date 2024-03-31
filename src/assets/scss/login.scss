@@ -3,9 +3,23 @@
 .login {
   width: 100lvw;
   min-height: 100lvh;
-  background: $gri;
+  background: $dark_blue;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  
+  flex-direction: column;
+  position: relative;
+  padding: 20px;
+  img {
+    width: 50%;
+    user-select: none;
+    z-index: 1;
+    aspect-ratio: 1;
+    object-fit: contain;
+    padding: 30px;
+    border-radius: 50%;
+    background-color: $light_blue;
+    position: relative;
+  }
+ 
 }

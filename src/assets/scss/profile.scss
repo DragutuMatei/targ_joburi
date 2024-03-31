@@ -1,0 +1,147 @@
+@import "./base";
+
+.loading {
+  width: 100lvw;
+  min-height: 100lvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $dark_blue;
+
+  .loader {
+    width: 65px;
+    aspect-ratio: 1;
+    position: relative;
+  }
+  .loader:before,
+  .loader:after {
+    content: "";
+    position: absolute;
+    border-radius: 50px;
+    box-shadow: 0 0 0 3px inset $light_blue;
+    animation: l5 2.5s infinite;
+  }
+  .loader:after {
+    animation-delay: -1.25s;
+    border-radius: 0;
+  }
+}
+@keyframes l5 {
+  0% {
+    inset: 0 35px 35px 0;
+  }
+  12.5% {
+    inset: 0 35px 0 0;
+  }
+  25% {
+    inset: 35px 35px 0 0;
+  }
+  37.5% {
+    inset: 35px 0 0 0;
+  }
+  50% {
+    inset: 35px 0 0 35px;
+  }
+  62.5% {
+    inset: 0 0 0 35px;
+  }
+  75% {
+    inset: 0 0 35px 35px;
+  }
+  87.5% {
+    inset: 0 0 35px 0;
+  }
+  100% {
+    inset: 0 35px 35px 0;
+  }
+}
+
+.profile {
+  width: 100lvw;
+  min-height: 100lvh;
+  background: $dark_blue;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  position: relative;
+
+  nav {
+    width: 100lvw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    height: 80px;
+    z-index: 99;
+    background: rgba($color: $light_blue, $alpha: 0.4);
+    box-shadow: 0 0 20px $black;
+    position: fixed;
+
+    img {
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+  .form {
+    padding-top: 100px;
+    z-index: 2;
+    svg {
+      margin-top: 10px;
+      width: 70px;
+      height: 70px;
+      align-self: flex-end;
+    }
+  }
+  .logout {
+    width: 100%;
+    padding: 0 20px;
+    button {
+      background-color: $red;
+      color: $white;
+    }
+  }
+  > h1 {
+    margin-top: 100px;
+    text-align: center;
+    width: 100%;
+
+    span {
+      color: $light_blue;
+      font-family: $karla;
+      font-weight: 900;
+
+      svg {
+        padding: 6px;
+        border-radius: 50%;
+        background: $red;
+        width: 30px;
+        position: relative;
+        left: 0px;
+        bottom: 12px;
+      }
+    }
+  }
+  > img {
+    align-self: center;
+    width: 80lvw;
+    aspect-ratio: 1;
+    margin: 20px 0;
+  }
+}
+
+.loaderUpdate {
+  width: 70px;
+  margin-top: 10px;
+  aspect-ratio: 1;
+  align-self: flex-end;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: $light_blue $dark_blue;
+  animation: l1 1s infinite;
+}
+@keyframes l1 {
+  to {
+    transform: rotate(0.5turn);
+  }
+}
