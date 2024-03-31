@@ -159,68 +159,78 @@ function Profile() {
     main && Object.hasOwn(main, "about") ? main.about.nume : ""
   );
   const [facultate, setFacultate] = useState(
-    main && Object.hasOwn(main, "about") ? main.about.facultate: ""
+    main && Object.hasOwn(main, "about") ? main.about.facultate : ""
   );
   const [spec, setSpec] = useState(
-    main && Object.hasOwn(main, "about") ? main.about.specializare: ""
+    main && Object.hasOwn(main, "about") ? main.about.specializare : ""
   );
   const [an, setAn] = useState(
     main && Object.hasOwn(main, "about") ? main.about.an : ""
   );
+  const [update_er, setUpdateErr] = useState("");
 
   const update = async () => {
     setLoadingUpdate(true);
-    if (file) {
-      const storage = getStorage();
+    if (nume !== "") {
+      setUpdateErr("");
 
-      const storageRef = ref(storage, `cv/${file.name}`);
+      if (file) {
+        const storage = getStorage();
 
-      try {
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        console.log(url);
-        setLink(url);
-        QRCode.toDataURL(url).then(async (res) => {
-          setR(res);
-          await fire
-            .updateData(`/targ_users/${main.id}`, {
-              cv: url,
-              qr: res,
+        const storageRef = ref(storage, `cv/${main.uid}/${file.name}`);
+
+        try {
+          await uploadBytes(storageRef, file);
+          const url = await getDownloadURL(storageRef);
+          console.log(url);
+          setLink(url);
+          QRCode.toDataURL(url).then(async (res) => {
+            setR(res);
+            await fire
+              .updateData(`/targ_users/${main.id}`, {
+                cv: url,
+                qr: res,
+                about: { nume, facultate, specializare: spec, an: Number(an) },
+              })
+              .then((res) => {
+                setIsUpdated(true);
+                setModi(false);
+                console.log(res);
+              });
+          });
+        } catch (error) {
+          alert(error);
+        }
+      } else {
+        console.log("plm");
+      }
+      if (modi) {
+        await fire
+          .updateData(`/targ_users/${main.id}`, {
+            about: { nume, facultate, specializare: spec, an: Number(an) },
+          })
+          .then(async (res) => {
+            setIsUpdated(true);
+            setModi(false);
+            console.log("din rasp", {
               about: { nume, facultate, specializare: spec, an: Number(an) },
-            })
-            .then((res) => {
-              setIsUpdated(true);
-              setModi(false);
-              console.log(res);
             });
-        });
-      } catch (error) {
-        alert(error);
+            if (user) {
+              await fire
+                .getUserByEmail2("/targ_users", user.email)
+                .then(async (res) => {
+                  console.log("res: ", res);
+                  console.log("ress: ", Object.keys(res)[0]);
+                  setUser({
+                    ...Object.values(res)[0],
+                    id: Object.keys(res)[0],
+                  });
+                });
+            }
+          });
       }
     } else {
-      console.log("plm");
-    }
-    if (modi) {
-      await fire
-        .updateData(`/targ_users/${main.id}`, {
-          about: { nume, facultate, specializare: spec, an: Number(an) },
-        })
-        .then(async (res) => {
-          setIsUpdated(true);
-          setModi(false);
-          console.log("din rasp", {
-            about: { nume, facultate, specializare: spec, an: Number(an) },
-          });
-          if (user) {
-            await fire
-              .getUserByEmail2("/targ_users", user.email)
-              .then(async (res) => {
-                console.log("res: ", res);
-                console.log("ress: ", Object.keys(res)[0]);
-                setUser({ ...Object.values(res)[0], id: Object.keys(res)[0] });
-              });
-          }
-        });
+      setUpdateErr("Numele este obligatoriu!");
     }
     setLoadingUpdate(false);
   };
@@ -297,7 +307,7 @@ function Profile() {
                         type="text"
                         placeholder="ex: Dragutu Matei"
                         defaultValue={
-                          Object.hasOwn(main, "about") && main.about.nume
+                          Object.hasOwn(main, "about") ? main.about.nume : ""
                         }
                         onChange={(e) => setNume(e.target.value)}
                       />
@@ -307,7 +317,9 @@ function Profile() {
                       <input
                         onChange={(e) => setFacultate(e.target.value)}
                         defaultValue={
-                          Object.hasOwn(main, "about") && main.about.facultate
+                          Object.hasOwn(main, "about")
+                            ? main.about.facultate
+                            : ""
                         }
                         type="text"
                         placeholder="ex: Facultatea de Inginerie Industriala si Robotica"
@@ -318,8 +330,9 @@ function Profile() {
                       <input
                         onChange={(e) => setSpec(e.target.value)}
                         defaultValue={
-                          Object.hasOwn(main, "about") &&
-                          main.about.specializare
+                          Object.hasOwn(main, "about")
+                            ? main.about.specializare
+                            : ""
                         }
                         type="text"
                         placeholder="ex: Informatica Aplicata"
@@ -345,6 +358,7 @@ function Profile() {
                         }}
                       />
                     </div>
+                    {update_er && <h4>{update_er}</h4>}
                     {loadingUpdate ? (
                       <div className="loaderUpdate"></div>
                     ) : (

@@ -12,14 +12,22 @@ function Login() {
 
   const [log_email, setLogEmail] = useState("");
   const [log_pass, setLogPass] = useState("");
+  const [err, setErr] = useState("");
   const login = async () => {
-    await fire.loginUser_for_targ(log_email, log_pass).then((res) => {
-      console.log(res);
-    });
+    await fire
+      .loginUser_for_targ(log_email, log_pass)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        setErr(err);
+        console.log(err);
+      });
   };
 
   useEffect(() => {
     console.log("fire 1: ", fire.getUser1());
+    // console.log(user.email);
     const aa = async () => {
       if (user) {
         await fire.getUserByEmail("/targ_users", user.email).then((res) => {
@@ -54,6 +62,7 @@ function Login() {
               onChange={(e) => setLogPass(e.target.value)}
             />
           </div>
+          {err && <h4>{err}</h4>}
           <button onClick={login}>Login</button>
         </div>
       </div>
