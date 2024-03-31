@@ -359,7 +359,7 @@ class Fire {
       return true;
     } catch (error) {
       console.error("Error adding CV to document: ", error);
-      throw error;
+      return false;
     }
   }
 }

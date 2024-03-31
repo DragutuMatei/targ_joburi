@@ -128,6 +128,32 @@
     aspect-ratio: 1;
     margin: 20px 0;
   }
+  .company {
+    width: 100lvw;
+    padding: 100px 10px 0px 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    h3 {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .loaderUpdate,
+    > svg {
+      margin-top: 20px;
+      justify-self: flex-end;
+      align-self: flex-end;
+      width: 70px;
+    }
+    h4 {
+      text-align: center;
+      color: $white;
+      margin: 20px 0;
+      font-family: $karla;
+      font-weight: 400;
+      font-size: 18px;
+    }
+  }
 }
 
 .loaderUpdate {

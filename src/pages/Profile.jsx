@@ -33,6 +33,10 @@ function Profile() {
 
             if (Object.values(res)[0].qr) setR(Object.values(res)[0].qr);
             if (Object.values(res)[0].rol === "company") {
+              console.log(Object.values(res)[0].final);
+              if (Object.values(res)[0].final) {
+                setFinal(true);
+              }
               await fire.getData("/stands").then((ress) => {
                 // setOcc(res.map((oc) => oc.stand));
                 if (ress && ress != null) {
@@ -57,9 +61,10 @@ function Profile() {
     };
     aa();
   }, [, user, loading]);
+  const [suuc, setSuuc] = useState("");
 
   useEffect(() => {
-    if (!loadingState && user && main && main.rol == "company") {
+    if (!loadingState && user && main && main.rol == "company" && final) {
       const scanner = new Html5QrcodeScanner("reader", {
         qrbox: {
           height: 250,
@@ -68,12 +73,27 @@ function Profile() {
         fps: 10,
       });
       const suc = async (rez) => {
+        scanner.pause(true);
         await fire
           .addCVToDocument(`/targ_users/${main.id}`, {
             cv: rez,
           })
           .then((res) => {
-            scanner.clear();
+            console.log("res", res);
+            if (res) {
+              setSuuc("CV prelut cu succes!");
+            } else {
+              setSuuc("Eroare de citire a codului QR!");
+            }
+            const timeoutId = setTimeout(() => {
+              scanner.resume();
+              setSuuc("");
+            }, 2000);
+
+            // Cleanup function to clear the timeout if the component unmounts
+            return () => clearTimeout(timeoutId);
+            // scanner.pause(true);
+            // scanner.clear();
           });
         // await fire.updateData(`/targ_users/${main.id}`, {})
         // alert(rez);
@@ -118,6 +138,7 @@ function Profile() {
 
   const save = async (i, email) => {
     if (occ.includes(i)) return;
+    setErr("");
     await fire.addData("/stands", { index: i, email }).then((res) => {
       setOcc((old) => [...old, i]);
       setMyStand(i);
@@ -129,6 +150,7 @@ function Profile() {
       .then((res) => {
         setOcc((old) => old.filter((nr) => nr != i));
         setMyStand();
+        setErr("Trebuie sa alegi un stand!");
       });
   };
 
@@ -202,7 +224,34 @@ function Profile() {
     }
     setLoadingUpdate(false);
   };
-
+  const [loading_final, setLoadingFinal] = useState(false);
+  const [final, setFinal] = useState(false);
+  const [err, setErr] = useState("");
+  const final_stand = async () => {
+    setLoadingFinal(true);
+    if (typeof myStand == "undefined") {
+      setErr("Trebuie sa alegi un stand!");
+      setLoadingFinal(false);
+      return;
+    }
+    // console.log("my:", myStand);
+    if (
+      confirm(
+        "Acesta va ramane standul dvs.! Nu il veti mai putea schimba! Doriti sa continuati?"
+      )
+    ) {
+      await fire
+        .updateData(`/targ_users/${main.id}`, {
+          final: true,
+        })
+        .then((res) => {
+          setFinal(true);
+          setLoadingFinal(false);
+        });
+    } else {
+      setLoadingFinal(false);
+    }
+  };
   return (
     <>
       {loadingState ? (
@@ -349,37 +398,67 @@ function Profile() {
               </>
             ) : (
               <>
-                <button
+                {/* <button
                   onClick={() => {
                     console.log(occ);
                     console.log(myStand);
                   }}
                 >
                   see
-                </button>
+                </button> */}
                 <div className="company">
-                  <div className="fiir">
-                    {Array.from({ length: 120 }).map((_, i) => {
-                      return (
-                        <>
-                          <button
-                            key={i}
-                            className="stand"
-                            disabled={occ.includes(i) || myStand >= 0}
-                            style={{
-                              background: occ.includes(i) && "red",
-                            }}
-                            onClick={() => save(i, main.email)}
-                          ></button>
-                          {myStand == i && occ.includes(i) && (
-                            <h3 onClick={() => uita_stand(i)}>delete this</h3>
-                          )}
-                        </>
-                      );
-                    })}
-                  </div>
-                  <br />
-                  <div id="reader"></div>
+                  {!final ? (
+                    <>
+                      <h3>Alege un stand</h3>
+                      <div className="fiir">
+                        {Array.from({ length: 24 }).map((_, i) => {
+                          return (
+                            <>
+                              <button
+                                key={i}
+                                className="stand"
+                                disabled={occ.includes(i) || myStand >= 0}
+                                style={{
+                                  background: occ.includes(i) && "red",
+                                }}
+                                onClick={() => save(i, main.email)}
+                              ></button>
+                              {myStand == i && occ.includes(i) && (
+                                <h3 onClick={() => uita_stand(i)}>
+                                  delete this
+                                </h3>
+                              )}
+                            </>
+                          );
+                        })}
+                      </div>
+                      {err && <h4>{err}</h4>}
+                      {loading_final ? (
+                        <div className="loaderUpdate"></div>
+                      ) : (
+                        <svg
+                          onClick={final_stand}
+                          clipRule="evenodd"
+                          fillRule="evenodd"
+                          strokeLinejoin="round"
+                          strokeMiterlimit="2"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="m12.007 2c-5.518 0-9.998 4.48-9.998 9.998 0 5.517 4.48 9.997 9.998 9.997s9.998-4.48 9.998-9.997c0-5.518-4.48-9.998-9.998-9.998zm1.523 6.21s1.502 1.505 3.255 3.259c.147.147.22.339.22.531s-.073.383-.22.53c-1.753 1.754-3.254 3.258-3.254 3.258-.145.145-.335.217-.526.217-.192-.001-.384-.074-.531-.221-.292-.293-.294-.766-.003-1.057l1.977-1.977h-6.693c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h6.693l-1.978-1.979c-.29-.289-.287-.762.006-1.054.147-.147.339-.221.53-.222.19 0 .38.071.524.215z"
+                            fillRule="nonzero"
+                            fill="#5bc0eb"
+                          />
+                        </svg>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div id="reader"></div>
+                      {suuc && <h3>{suuc}</h3>}
+                    </>
+                  )}
                 </div>
               </>
             )}
