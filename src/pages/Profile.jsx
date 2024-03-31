@@ -73,10 +73,10 @@ function Profile() {
             cv: rez,
           })
           .then((res) => {
-            alert("bv, esti prost bata");
+            scanner.clear();
           });
         // await fire.updateData(`/targ_users/${main.id}`, {})
-        alert(rez);
+        // alert(rez);
       };
       const er = (err) => {
         // alert(err);
