@@ -18,6 +18,7 @@ import {
   orderByChild,
   equalTo,
 } from "firebase/database";
+import { getDownloadURL } from "firebase/storage";
 
 class Fire {
   constructor() {
@@ -361,6 +362,22 @@ class Fire {
       console.error("Error adding CV to document: ", error);
       return false;
     }
+  }
+  async idk() {
+    await this.getUserByEmail2("/targ_users", this.auth.currentUser.email).then(
+      async (res) => {
+        console.log(Object.values(res)[0].cvs);
+        getDownloadURL(Object.values(res)[0].cvs[0].cv).then((res) => {
+          const xhr = new XMLHttpRequest();
+          xhr.responseType = "blob";
+          xhr.onload = (event) => {
+            const blob = xhr.response;
+          };
+          xhr.open("GET", res);
+          xhr.send();
+        });
+      }
+    );
   }
 }
 

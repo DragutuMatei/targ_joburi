@@ -6,6 +6,9 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import QRCode from "qrcode";
 import Fire from "../utils/Fire";
 import "../assets/scss/profile.scss";
+import { saveAs } from "file-saver";
+import axios from "axios";
+import fileDownload from "js-file-download";
 
 const fire = new Fire();
 function Profile() {
@@ -74,6 +77,7 @@ function Profile() {
       });
       const suc = async (rez) => {
         scanner.pause(true);
+
         await fire
           .addCVToDocument(`/targ_users/${main.id}`, {
             cv: rez,
@@ -262,43 +266,69 @@ function Profile() {
       setLoadingFinal(false);
     }
   };
-
+  const download = () => {
+    var element = document.createElement("a");
+    var file = new Blob(
+      [
+        "https://timesofindia.indiatimes.com/thumb/msid-70238371,imgsize-89579,width-400,resizemode-4/70238371.jpg",
+      ],
+      { type: "image/*" }
+    );
+    element.href = URL.createObjectURL(file);
+    element.download = "image.jpg";
+    element.click();
+  };
   const downloadFiles = async () => {
     if (user) {
       await fire
         .getUserByEmail2("/targ_users", user.email)
         .then(async (res) => {
-          console.log(Object.values(res)[0].cvs);
+          console.log(Object.values(res)[0].cvs.map((i) => i.cv));
 
-          for (const link of Object.values(res)[0].cvs) {
-            // Fetch the file and create a temporary link for download
-            fetch(link.cv)
-              .then((response) => response.blob())
-              .then((blob) => {
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                // Set filename based on the URL, if possible
-                const extractedFilename = link.href.split("/").pop();
-                link.setAttribute("download", extractedFilename || "download");
-                link.click();
-              })
-              .catch((error) =>
-                console.error("Error downloading file:", error)
-              );
-          }
-
-          // .forEach(function (link) {
-          //   console.log(link);
-          //   var a = document.createElement("a");
-          //   a.href = link.cv;
-          //   a.download = "";
-          //   document.body.appendChild(a);
-          //   a.click();
-          //   document.body.removeChild(a);
+          // var element = document.createElement("a");
+          // var file = new Blob([Object.values(res)[0].cvs[0].cv], {
+          //   type: "media/*",
           // });
+          // element.href = URL.createObjectURL(file);
+          // element.download = "file.pdf";
+          // element.click();
+          let i = 0;
+          for (const link of Object.values(res)[0].cvs) {
+            // saveAs(link.cv, i + "ok.pdf");
+            await axios.get(link.cv).then((res) => {
+              fileDownload(res.data, "plm.pdf");
+            });
+            i++;
+          }
         });
     }
+    //         // Fetch the file and create a temporary link for download
+    //         await fetch(link.cv)
+    //           .then((response) => response.blob())
+    //           .then((blob) => {
+    //             const url = URL.createObjectURL(blob);
+    //             const link = document.createElement("a");
+    //             link.href = url;
+    //             // Set filename based on the URL, if possible
+    //             const extractedFilename = link.href.split("/").pop();
+    //             link.setAttribute("download", extractedFilename || "download");
+    //             link.click();
+    //           })
+    //           .catch((error) =>
+    //             console.error("Error downloading file:", error)
+    //           );
+    //       }
+
+    // .forEach(function (link) {
+    //   console.log(link);
+    //   var a = document.createElement("a");
+    //   a.href = link.cv;
+    //   a.download = "";
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   document.body.removeChild(a);
+    // });
+    // });
   };
 
   return (

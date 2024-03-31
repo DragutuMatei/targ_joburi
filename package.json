@@ -1,5 +1,4 @@
-
-{  
+{
   "name": "targ",
   "version": "0.1.0",
   "private": true,
@@ -8,10 +7,12 @@
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
     "aos": "^2.3.4",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
+    "file-saver": "^2.0.5",
     "firebase": "^10.8.1",
     "html5-qrcode": "^2.3.8",
     "jquery": "^3.7.1",
+    "js-file-download": "^0.4.12",
     "qrcode": "^1.5.3",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
