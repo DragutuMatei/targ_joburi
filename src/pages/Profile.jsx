@@ -262,6 +262,45 @@ function Profile() {
       setLoadingFinal(false);
     }
   };
+
+  const downloadFiles = async () => {
+    if (user) {
+      await fire
+        .getUserByEmail2("/targ_users", user.email)
+        .then(async (res) => {
+          console.log(Object.values(res)[0].cvs);
+
+          for (const link of Object.values(res)[0].cvs) {
+            // Fetch the file and create a temporary link for download
+            fetch(link.cv)
+              .then((response) => response.blob())
+              .then((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                // Set filename based on the URL, if possible
+                const extractedFilename = link.href.split("/").pop();
+                link.setAttribute("download", extractedFilename || "download");
+                link.click();
+              })
+              .catch((error) =>
+                console.error("Error downloading file:", error)
+              );
+          }
+
+          // .forEach(function (link) {
+          //   console.log(link);
+          //   var a = document.createElement("a");
+          //   a.href = link.cv;
+          //   a.download = "";
+          //   document.body.appendChild(a);
+          //   a.click();
+          //   document.body.removeChild(a);
+          // });
+        });
+    }
+  };
+
   return (
     <>
       {loadingState ? (
@@ -475,7 +514,9 @@ function Profile() {
                       ></div>
                       {suuc && <h3>{suuc}</h3>}
                       <div className="download">
-                        <button>Download all CVs</button>
+                        <button onClick={() => downloadFiles()}>
+                          Download all CVs
+                        </button>
                       </div>
                     </>
                   )}
