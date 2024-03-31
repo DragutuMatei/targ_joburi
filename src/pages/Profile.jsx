@@ -156,16 +156,16 @@ function Profile() {
 
   const [isUpdated, setIsUpdated] = useState(false);
   const [nume, setNume] = useState(
-    main && Object.hasOwn(main, "about") && main.about.nume
+    main && Object.hasOwn(main, "about") ? main.about.nume : ""
   );
   const [facultate, setFacultate] = useState(
-    main && Object.hasOwn(main, "about") && main.about.facultate
+    main && Object.hasOwn(main, "about") ? main.about.facultate: ""
   );
   const [spec, setSpec] = useState(
-    main && Object.hasOwn(main, "about") && main.about.specializare
+    main && Object.hasOwn(main, "about") ? main.about.specializare: ""
   );
   const [an, setAn] = useState(
-    main && Object.hasOwn(main, "about") && main.about.an
+    main && Object.hasOwn(main, "about") ? main.about.an : ""
   );
 
   const update = async () => {
