@@ -171,13 +171,13 @@ function Profile() {
 
   const update = async () => {
     setLoadingUpdate(true);
-    if (nume !== "") {
+    if (nume !== "" || main.about.nume !== "") {
       setUpdateErr("");
 
       if (file) {
         const storage = getStorage();
 
-        const storageRef = ref(storage, `cv/${main.uid}/${file.name}`);
+        const storageRef = ref(storage, `cv/${file.name}`);
 
         try {
           await uploadBytes(storageRef, file);
