@@ -474,6 +474,9 @@ function Profile() {
                         style={{ width: "80%", margin: "0 auto" }}
                       ></div>
                       {suuc && <h3>{suuc}</h3>}
+                      <div className="download">
+                        <button>Download all CVs</button>
+                      </div>
                     </>
                   )}
                 </div>
