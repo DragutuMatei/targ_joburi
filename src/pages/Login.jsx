@@ -20,7 +20,7 @@ function Login() {
         console.log(res);
       })
       .catch((err) => {
-        setErr(err);
+        setErr("Eroare de conectare! Verifica daca ai introdus datele corect!");
         console.log(err);
       });
   };

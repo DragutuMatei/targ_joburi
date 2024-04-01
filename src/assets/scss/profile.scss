@@ -165,6 +165,11 @@
     .download {
       width: 100%;
       padding: 0 10px;
+      button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
   }
 }

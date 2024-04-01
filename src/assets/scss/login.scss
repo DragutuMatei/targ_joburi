@@ -21,5 +21,12 @@
     background-color: $light_blue;
     position: relative;
   }
- 
+  h4 {
+    text-align: center;
+    color: $white;
+    margin: 20px 0;
+    font-family: $karla;
+    font-weight: 400;
+    font-size: 18px;
+  }
 }

@@ -551,7 +551,11 @@ function Profile() {
                       {suuc && <h3>{suuc}</h3>}
                       <div className="download">
                         <button onClick={() => downloadFiles()}>
-                          Download all CVs
+                          {loading_download ? (
+                            <div className="loaderUpdate"></div>
+                          ) : (
+                            "Download all CVs"
+                          )}
                         </button>
                       </div>
                     </>
