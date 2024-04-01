@@ -67,6 +67,10 @@ function Profile() {
   const [suuc, setSuuc] = useState("");
 
   useEffect(() => {
+    console.log(final);
+    console.log(
+      !loadingState && user && main && main.rol == "company" && final
+    );
     if (!loadingState && user && main && main.rol == "company" && final) {
       const scanner = new Html5QrcodeScanner("reader", {
         qrbox: {
@@ -107,7 +111,7 @@ function Profile() {
       };
       scanner.render(suc, er);
     }
-  }, [main, loadingState]);
+  }, [, main, loadingState]);
   const [file, setFile] = useState();
   const [link, setLink] = useState("");
   const upload = async () => {
@@ -161,7 +165,7 @@ function Profile() {
   useEffect(() => {
     console.log("main: ", main);
     if (main && Object.hasOwn(main, "about")) {
-      console.log("mmmmm")
+      console.log("mmmmm");
       setNume(main.about.nume);
       setFacultate(main.about.facultate);
       setSpec(main.about.specializare);
@@ -322,7 +326,7 @@ function Profile() {
           for (const link of Object.values(res)[0].cvs) {
             // saveAs(link.cv, i + "ok.pdf");
             await axios.get(link.cv).then((res) => {
-              fileDownload(res.data, "plm.pdf");
+              fileDownload(res.data, `cv -${i}.pdf`);
             });
             i++;
           }
@@ -576,9 +580,6 @@ function Profile() {
                       ></div>
                       {suuc && <h3>{suuc}</h3>}
                       <div className="download">
-                        <a href={main.cvs[0].cv} download={true}>
-                          download ceva macar care merge deschis pls
-                        </a>
                         <button onClick={() => downloadFiles()}>
                           Download all CVs
                         </button>
