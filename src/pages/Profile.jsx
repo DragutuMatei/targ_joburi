@@ -8,6 +8,7 @@ import Fire from "../utils/Fire";
 import "../assets/scss/profile.scss";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
+import axios from "axios";
 
 const fire = new Fire();
 function Profile() {
@@ -319,16 +320,32 @@ function Profile() {
           console.log(Object.values(res)[0].cvs.length);
 
           var zip = new JSZip();
-          var folder = zip.folder("cvs");
 
           for (const link of Object.values(res)[0].cvs) {
-            saveAs(link.cv);
+            // saveAs(link.cv);
+            let extensie = "pdf";
+            if (link.cv.includes(".pdf")) extensie = "pdf";
+            else if (link.cv.includes(".png")) extensie = "png";
+            else if (link.cv.includes(".jpg")) extensie = "jpg";
+            else if (link.cv.includes(".jpeg")) extensie = "jpeg";
 
-            // await axios.get(link.cv).then((res) => {
-            //   fileDownload(res.data, `cv -${i}.pdf`);
-            // });
+            const response = await fetch(link.cv);
+            const blob = await response.blob();
+
+            zip.file(`cv${i}.${extensie}`, blob);
             i++;
           }
+
+          const zipData = await zip.generateAsync({
+            type: "blob",
+            streamFiles: true,
+          });
+
+          // Create a download link for the zip file
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(zipData);
+          link.download = "cvs.zip";
+          link.click();
         });
     }
     setLoadingDownload(false);
