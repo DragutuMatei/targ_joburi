@@ -21,6 +21,8 @@ function Profile() {
   const [modi, setModi] = useState(false);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
 
+  const [final, setFinal] = useState(false);
+
   useEffect(() => {
     if (!user && !loading) {
       navigate("/");
@@ -68,9 +70,7 @@ function Profile() {
 
   useEffect(() => {
     console.log(final);
-    console.log(
-      !loadingState && user && main && main.rol == "company" && final
-    );
+    console.log(!loadingState && user && main && main.rol == "company");
     if (!loadingState && user && main && main.rol == "company" && final) {
       const scanner = new Html5QrcodeScanner("reader", {
         qrbox: {
@@ -111,7 +111,7 @@ function Profile() {
       };
       scanner.render(suc, er);
     }
-  }, [, main, loadingState]);
+  }, [, main, loadingState, final]);
   const [file, setFile] = useState();
   const [link, setLink] = useState("");
   const upload = async () => {
@@ -269,7 +269,6 @@ function Profile() {
     setLoadingUpdate(false);
   };
   const [loading_final, setLoadingFinal] = useState(false);
-  const [final, setFinal] = useState(false);
   const [err, setErr] = useState("");
   const final_stand = async () => {
     setLoadingFinal(true);
@@ -323,11 +322,13 @@ function Profile() {
           // element.download = "file.pdf";
           // element.click();
           let i = 0;
+          console.log(Object.values(res)[0].cvs.length);
           for (const link of Object.values(res)[0].cvs) {
-            // saveAs(link.cv, i + "ok.pdf");
-            await axios.get(link.cv).then((res) => {
-              fileDownload(res.data, `cv -${i}.pdf`);
-            });
+            saveAs(link.cv);
+
+            // await axios.get(link.cv).then((res) => {
+            //   fileDownload(res.data, `cv -${i}.pdf`);
+            // });
             i++;
           }
         });
