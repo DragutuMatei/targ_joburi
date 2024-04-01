@@ -158,6 +158,17 @@ function Profile() {
       });
   };
 
+  useEffect(() => {
+    console.log("main: ", main);
+    if (main && Object.hasOwn(main, "about")) {
+      console.log("mmmmm")
+      setNume(main.about.nume);
+      setFacultate(main.about.facultate);
+      setSpec(main.about.specializare);
+      setAn(main.about.an);
+    }
+  }, [, main]);
+
   const [isUpdated, setIsUpdated] = useState(false);
   const [nume, setNume] = useState(
     main && Object.hasOwn(main, "about") ? main.about.nume : ""
@@ -169,7 +180,7 @@ function Profile() {
     main && Object.hasOwn(main, "about") ? main.about.specializare : ""
   );
   const [an, setAn] = useState(
-    main && Object.hasOwn(main, "about") ? main.about.an : ""
+    main && Object.hasOwn(main, "about") ? main.about.an : 0
   );
   const [update_er, setUpdateErr] = useState("");
 
@@ -196,10 +207,22 @@ function Profile() {
                 qr: res,
                 about: { nume, facultate, specializare: spec, an: Number(an) },
               })
-              .then((res) => {
+              .then(async (res) => {
                 setIsUpdated(true);
                 setModi(false);
                 console.log(res);
+                if (user) {
+                  await fire
+                    .getUserByEmail2("/targ_users", user.email)
+                    .then(async (res) => {
+                      console.log("res: ", res);
+                      console.log("ress: ", Object.keys(res)[0]);
+                      setUser({
+                        ...Object.values(res)[0],
+                        id: Object.keys(res)[0],
+                      });
+                    });
+                }
               });
           });
         } catch (error) {
@@ -209,6 +232,9 @@ function Profile() {
         console.log("plm");
       }
       if (modi) {
+        console.log({
+          about: { nume, facultate, specializare: spec, an: Number(an) },
+        });
         await fire
           .updateData(`/targ_users/${main.id}`, {
             about: { nume, facultate, specializare: spec, an: Number(an) },
@@ -459,6 +485,12 @@ function Profile() {
                           onClick={() => {
                             setIsUpdated(false);
                             setModi(true);
+                            console.log({
+                              nume,
+                              facultate,
+                              specializare: spec,
+                              an: Number(an),
+                            });
                           }}
                           clipRule="evenodd"
                           fillRule="evenodd"
@@ -544,6 +576,9 @@ function Profile() {
                       ></div>
                       {suuc && <h3>{suuc}</h3>}
                       <div className="download">
+                        <a href={main.cvs[0].cv} download={true}>
+                          download ceva macar care merge deschis pls
+                        </a>
                         <button onClick={() => downloadFiles()}>
                           Download all CVs
                         </button>
