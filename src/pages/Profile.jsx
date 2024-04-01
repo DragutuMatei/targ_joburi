@@ -7,8 +7,7 @@ import QRCode from "qrcode";
 import Fire from "../utils/Fire";
 import "../assets/scss/profile.scss";
 import { saveAs } from "file-saver";
-import axios from "axios";
-import fileDownload from "js-file-download";
+import JSZip from "jszip";
 
 const fire = new Fire();
 function Profile() {
@@ -318,6 +317,10 @@ function Profile() {
           console.log(Object.values(res)[0].cvs.map((i) => i.cv));
           let i = 0;
           console.log(Object.values(res)[0].cvs.length);
+
+          var zip = new JSZip();
+          var folder = zip.folder("cvs");
+
           for (const link of Object.values(res)[0].cvs) {
             saveAs(link.cv);
 
@@ -371,7 +374,7 @@ function Profile() {
                 {!isUpdated ? (
                   <div className="form">
                     <div className="input_field">
-                      <h3>Nume si prenume</h3>
+                      <h3>Nume</h3>
                       <input
                         type="text"
                         placeholder="ex: Dragutu Matei"
