@@ -307,20 +307,15 @@ function Profile() {
     element.download = "image.jpg";
     element.click();
   };
+
+  const [loading_download, setLoadingDownload] = useState(false);
   const downloadFiles = async () => {
+    setLoadingDownload(true);
     if (user) {
       await fire
         .getUserByEmail2("/targ_users", user.email)
         .then(async (res) => {
           console.log(Object.values(res)[0].cvs.map((i) => i.cv));
-
-          // var element = document.createElement("a");
-          // var file = new Blob([Object.values(res)[0].cvs[0].cv], {
-          //   type: "media/*",
-          // });
-          // element.href = URL.createObjectURL(file);
-          // element.download = "file.pdf";
-          // element.click();
           let i = 0;
           console.log(Object.values(res)[0].cvs.length);
           for (const link of Object.values(res)[0].cvs) {
@@ -333,33 +328,7 @@ function Profile() {
           }
         });
     }
-    //         // Fetch the file and create a temporary link for download
-    //         await fetch(link.cv)
-    //           .then((response) => response.blob())
-    //           .then((blob) => {
-    //             const url = URL.createObjectURL(blob);
-    //             const link = document.createElement("a");
-    //             link.href = url;
-    //             // Set filename based on the URL, if possible
-    //             const extractedFilename = link.href.split("/").pop();
-    //             link.setAttribute("download", extractedFilename || "download");
-    //             link.click();
-    //           })
-    //           .catch((error) =>
-    //             console.error("Error downloading file:", error)
-    //           );
-    //       }
-
-    // .forEach(function (link) {
-    //   console.log(link);
-    //   var a = document.createElement("a");
-    //   a.href = link.cv;
-    //   a.download = "";
-    //   document.body.appendChild(a);
-    //   a.click();
-    //   document.body.removeChild(a);
-    // });
-    // });
+    setLoadingDownload(false);
   };
 
   return (
